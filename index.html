@@ -140,7 +140,7 @@ isolation.  In the process, you&#8217;ll learn about the basics of the Worker AP
 <p>A Java Development Kit (JDK), version 1.7 or better</p>
 </li>
 <li>
-<p>A <a href="https://gradle.org/install">Gradle distribution</a>, version 4.5 or better</p>
+<p>A <a href="https://gradle.org/install">Gradle distribution</a>, version 4.6 or better</p>
 </li>
 </ul>
 </div>
@@ -186,7 +186,7 @@ MD5 hashes.</td>
 <td class="content">
 If you are not familiar with <code>buildSrc</code>, this is a special directory that allows you to define and build
 custom classes that should be available for use in your build script.  See
-<a href="https://docs.gradle.org/4.5/userguide/organizing_build_logic.html#sec:build_sources">the user manual</a> for further information.
+<a href="https://docs.gradle.org/4.6/userguide/organizing_build_logic.html#sec:build_sources">the user manual</a> for further information.
 </td>
 </tr>
 </table>
@@ -236,7 +236,7 @@ custom classes that should be available for use in your build script.  See
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td><a href="https://docs.gradle.org/4.5/javadoc/org/gradle/api/tasks/SourceTask.html">SourceTask</a> is a convenience type for tasks that operate on a
+<td><a href="https://docs.gradle.org/4.6/javadoc/org/gradle/api/tasks/SourceTask.html">SourceTask</a> is a convenience type for tasks that operate on a
 set of source files.</td>
 </tr>
 <tr>
@@ -398,7 +398,7 @@ class.  This class is your "unit of work" implementation and should implement <c
 </div>
 <div class="paragraph">
 <p>Now, you should change your custom task class to submit work to the
-<a href="https://docs.gradle.org/4.5/javadoc/org/gradle/workers/WorkerExecutor.html">WorkerExecutor</a> instead of doing the work itself.</p>
+<a href="https://docs.gradle.org/4.6/javadoc/org/gradle/workers/WorkerExecutor.html">WorkerExecutor</a> instead of doing the work itself.</p>
 </div>
 <div class="listingblock">
 <div class="title">buildSrc/src/main/java/CreateMD5.java</div>
@@ -442,14 +442,14 @@ class.  This class is your "unit of work" implementation and should implement <c
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>You&#8217;ll need to have the <a href="https://docs.gradle.org/4.5/javadoc/org/gradle/workers/WorkerExecutor.html">WorkerExecutor</a> service in order
+<td>You&#8217;ll need to have the <a href="https://docs.gradle.org/4.6/javadoc/org/gradle/workers/WorkerExecutor.html">WorkerExecutor</a> service in order
 to submit your work.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>To get a <a href="https://docs.gradle.org/4.5/javadoc/org/gradle/workers/WorkerExecutor.html">WorkerExecutor</a>, create a constructor annotated
+<td>To get a <a href="https://docs.gradle.org/4.6/javadoc/org/gradle/workers/WorkerExecutor.html">WorkerExecutor</a>, create a constructor annotated
 with <code>javax.inject.Inject</code>.  Gradle will inject the
-<a href="https://docs.gradle.org/4.5/javadoc/org/gradle/workers/WorkerExecutor.html">WorkerExecutor</a> at runtime when the task is created.</td>
+<a href="https://docs.gradle.org/4.6/javadoc/org/gradle/workers/WorkerExecutor.html">WorkerExecutor</a> at runtime when the task is created.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -581,7 +581,7 @@ classloader.</p>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
 <td>Configure the classpath on the
-<a href="https://docs.gradle.org/4.5/javadoc/org/gradle/workers/WorkerConfiguration.html">WorkerConfiguration</a> when submitting the work item.</td>
+<a href="https://docs.gradle.org/4.6/javadoc/org/gradle/workers/WorkerConfiguration.html">WorkerConfiguration</a> when submitting the work item.</td>
 </tr>
 </table>
 </div>
@@ -727,7 +727,7 @@ configure custom settings for the new process.</p>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Set up the <a href="https://docs.gradle.org/4.5/javadoc/org/gradle/process/JavaForkOptions.html">JavaForkOptions</a> for the new process.</td>
+<td>Set up the <a href="https://docs.gradle.org/4.6/javadoc/org/gradle/process/JavaForkOptions.html">JavaForkOptions</a> for the new process.</td>
 </tr>
 </table>
 </div>
