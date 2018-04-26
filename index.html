@@ -3,14 +3,14 @@
 <head><link crossorigin href="//assets.gradle.com" rel="preconnect">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,400i">
 <link rel="stylesheet" href="https://guides.gradle.org/css/asciidoctor.css">
-<link rel="stylesheet" href="https://guides.gradle.org/css/docs-blue-theme-4.5.2.css">
+<link rel="stylesheet" href="https://guides.gradle.org/css/docs-blue-theme-4.7.css">
 <link rel="apple-touch-icon" sizes="180x180" href="https://guides.gradle.org/icon/apple-touch-icon.png">
 <link rel="icon" type="image/png" href="https://guides.gradle.org/icon/favicon-32x32.png" sizes="32x32">
 <link rel="icon" type="image/png" href="https://guides.gradle.org/icon/favicon-16x16.png" sizes="16x16">
 <link rel="manifest" href="https://guides.gradle.org/icon/manifest.json">
 <link rel="mask-icon" href="https://guides.gradle.org/icon/safari-pinned-tab.svg" color="#5bbad5">
 <link rel="shortcut icon" href="https://guides.gradle.org/icon/favicon.ico">
-<script defer src="https://guides.gradle.org/js/guides.js"></script>
+<script defer src="https://guides.gradle.org/js/guides-4.7.js"></script>
 <script defer src="https://guides.gradle.org/js/set-time-to-complete-text.js"></script>
 <script async src="https://guides.gradle.org/js/autotrack.js"></script>
 
@@ -21,7 +21,6 @@
 <meta name="author" content="Gary Hale">
 <title>Using the Worker API</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
-<link rel="stylesheet" href="./coderay-asciidoctor.css">
 </head>
 <body class="article">
 <header class="site-layout__header site-header" itemscope="itemscope" itemtype="https://schema.org/WPHeader">
@@ -141,7 +140,7 @@ isolation.  In the process, you&#8217;ll learn about the basics of the Worker AP
 <p>A Java Development Kit (JDK), version 1.7 or better</p>
 </li>
 <li>
-<p>A <a href="https://gradle.org/install">Gradle distribution</a>, version 4.6 or better</p>
+<p>A <a href="https://gradle.org/install">Gradle distribution</a>, version 4.7 or better</p>
 </li>
 </ul>
 </div>
@@ -159,13 +158,13 @@ isolation.  In the process, you&#8217;ll learn about the basics of the Worker AP
 <div class="listingblock">
 <div class="title">buildSrc/build.gradle</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">repositories {
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">repositories {
     jcenter()
 }
 
 dependencies {
-    compile <span class="string"><span class="delimiter">&quot;</span><span class="content">commons-io:commons-io:2.5</span><span class="delimiter">&quot;</span></span>
-    compile <span class="string"><span class="delimiter">&quot;</span><span class="content">commons-codec:commons-codec:1.9</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
+    compile "commons-io:commons-io:2.5"
+    compile "commons-codec:commons-codec:1.9" <i class="conum" data-value="1"></i><b>(1)</b>
 }</code></pre>
 </div>
 </div>
@@ -187,7 +186,7 @@ MD5 hashes.</td>
 <td class="content">
 If you are not familiar with <code>buildSrc</code>, this is a special directory that allows you to define and build
 custom classes that should be available for use in your build script.  See
-<a href="https://docs.gradle.org/4.6/userguide/organizing_build_logic.html#sec:build_sources">the user manual</a> for further information.
+<a href="https://docs.gradle.org/4.7/userguide/organizing_build_logic.html#sec:build_sources">the user manual</a> for further information.
 </td>
 </tr>
 </table>
@@ -198,35 +197,35 @@ custom classes that should be available for use in your build script.  See
 <div class="listingblock">
 <div class="title">buildSrc/src/main/java/CreateMD5.java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">org.apache.commons.codec.digest.DigestUtils</span>;
-<span class="keyword">import</span> <span class="include">org.apache.commons.io.FileUtils</span>;
-<span class="keyword">import</span> <span class="include">org.gradle.api.tasks</span>.*;
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
+import org.gradle.api.tasks.*;
 
-<span class="keyword">import</span> <span class="include">javax.inject.Inject</span>;
-<span class="keyword">import</span> <span class="include">java.io.File</span>;
-<span class="keyword">import</span> <span class="include">java.io.FileInputStream</span>;
-<span class="keyword">import</span> <span class="include">java.io.InputStream</span>;
+import javax.inject.Inject;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 
-<span class="type">class</span> <span class="class">CreateMD5</span> <span class="directive">extends</span> SourceTask { <i class="conum" data-value="1"></i><b>(1)</b>
-    <span class="annotation">@OutputDirectory</span>
-    <span class="predefined-type">File</span> destinationDir; <i class="conum" data-value="2"></i><b>(2)</b>
+class CreateMD5 extends SourceTask { <i class="conum" data-value="1"></i><b>(1)</b>
+    @OutputDirectory
+    File destinationDir; <i class="conum" data-value="2"></i><b>(2)</b>
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">public</span> CreateMD5() {
-        <span class="local-variable">super</span>();
+    @Inject
+    public CreateMD5() {
+        super();
     }
 
-    <span class="annotation">@TaskAction</span>
-    <span class="directive">public</span> <span class="type">void</span> createHashes() {
-        <span class="keyword">for</span> (<span class="predefined-type">File</span> sourceFile : getSource().getFiles()) { <i class="conum" data-value="3"></i><b>(3)</b>
-            <span class="keyword">try</span> {
-                <span class="predefined-type">InputStream</span> stream = <span class="keyword">new</span> <span class="predefined-type">FileInputStream</span>(sourceFile);
-                <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">Generating MD5 for </span><span class="delimiter">&quot;</span></span> + sourceFile.getName() + <span class="string"><span class="delimiter">&quot;</span><span class="content">...</span><span class="delimiter">&quot;</span></span>);
-                <span class="predefined-type">Thread</span>.sleep(<span class="integer">3000</span>); <i class="conum" data-value="4"></i><b>(4)</b>
-                <span class="predefined-type">File</span> md5File = <span class="keyword">new</span> <span class="predefined-type">File</span>(destinationDir, sourceFile.getName() + <span class="string"><span class="delimiter">&quot;</span><span class="content">.md5</span><span class="delimiter">&quot;</span></span>); <i class="conum" data-value="5"></i><b>(5)</b>
-                FileUtils.writeStringToFile(md5File, DigestUtils.md5Hex(stream), (<span class="predefined-type">String</span>) <span class="predefined-constant">null</span>);
-            } <span class="keyword">catch</span> (<span class="exception">Exception</span> e) {
-                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">RuntimeException</span>(e);
+    @TaskAction
+    public void createHashes() {
+        for (File sourceFile : getSource().getFiles()) { <i class="conum" data-value="3"></i><b>(3)</b>
+            try {
+                InputStream stream = new FileInputStream(sourceFile);
+                System.out.println("Generating MD5 for " + sourceFile.getName() + "...");
+                Thread.sleep(3000); <i class="conum" data-value="4"></i><b>(4)</b>
+                File md5File = new File(destinationDir, sourceFile.getName() + ".md5"); <i class="conum" data-value="5"></i><b>(5)</b>
+                FileUtils.writeStringToFile(md5File, DigestUtils.md5Hex(stream), (String) null);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
     }
@@ -237,7 +236,7 @@ custom classes that should be available for use in your build script.  See
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td><a href="https://docs.gradle.org/4.6/javadoc/org/gradle/api/tasks/SourceTask.html">SourceTask</a> is a convenience type for tasks that operate on a
+<td><a href="https://docs.gradle.org/4.7/javadoc/org/gradle/api/tasks/SourceTask.html">SourceTask</a> is a convenience type for tasks that operate on a
 set of source files.</td>
 </tr>
 <tr>
@@ -264,11 +263,11 @@ set of source files.</td>
 <div class="listingblock">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">plugins { id <span class="string"><span class="delimiter">'</span><span class="content">base</span><span class="delimiter">'</span></span> } <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">plugins { id 'base' } <i class="conum" data-value="1"></i><b>(1)</b>
 
 task md5(type: CreateMD5) {
-    destinationDir = file(<span class="string"><span class="delimiter">&quot;</span><span class="content">${buildDir}/md5</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="2"></i><b>(2)</b>
-    source file(<span class="string"><span class="delimiter">&quot;</span><span class="content">src</span><span class="delimiter">&quot;</span></span>) <i class="conum" data-value="3"></i><b>(3)</b>
+    destinationDir = file("${buildDir}/md5") <i class="conum" data-value="2"></i><b>(2)</b>
+    source file("src") <i class="conum" data-value="3"></i><b>(3)</b>
 }</code></pre>
 </div>
 </div>
@@ -294,19 +293,19 @@ task md5(type: CreateMD5) {
 <div class="listingblock">
 <div class="title">src/einstein.txt</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="text">Intellectual growth should commence at birth and cease only at death.</code></pre>
+<pre class="prettyprint highlight"><code class="language-text" data-lang="text">Intellectual growth should commence at birth and cease only at death.</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">src/feynman.txt</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="text">I was born not knowing and have had only a little time to change that here and there.</code></pre>
+<pre class="prettyprint highlight"><code class="language-text" data-lang="text">I was born not knowing and have had only a little time to change that here and there.</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">src/oppenheimer.txt</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="text">No man should escape our universities without knowing how little he knows.</code></pre>
+<pre class="prettyprint highlight"><code class="language-text" data-lang="text">No man should escape our universities without knowing how little he knows.</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -353,33 +352,33 @@ class.  This class is your "unit of work" implementation and should implement <c
 <div class="listingblock">
 <div class="title">buildSrc/src/main/java/GenerateMD5.java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">org.apache.commons.codec.digest.DigestUtils</span>;
-<span class="keyword">import</span> <span class="include">org.apache.commons.io.FileUtils</span>;
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
 
-<span class="keyword">import</span> <span class="include">javax.inject.Inject</span>;
-<span class="keyword">import</span> <span class="include">java.io.File</span>;
-<span class="keyword">import</span> <span class="include">java.io.FileInputStream</span>;
-<span class="keyword">import</span> <span class="include">java.io.InputStream</span>;
+import javax.inject.Inject;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 
-<span class="directive">public</span> <span class="type">class</span> <span class="class">GenerateMD5</span> <span class="directive">implements</span> <span class="predefined-type">Runnable</span> {
-    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">File</span> sourceFile;
-    <span class="directive">private</span> <span class="directive">final</span> <span class="predefined-type">File</span> md5File;
+public class GenerateMD5 implements Runnable {
+    private final File sourceFile;
+    private final File md5File;
 
-    <span class="annotation">@Inject</span> <i class="conum" data-value="1"></i><b>(1)</b>
-    <span class="directive">public</span> GenerateMD5(<span class="predefined-type">File</span> sourceFile, <span class="predefined-type">File</span> md5File) { <i class="conum" data-value="2"></i><b>(2)</b>
-        <span class="local-variable">this</span>.sourceFile = sourceFile;
-        <span class="local-variable">this</span>.md5File = md5File;
+    @Inject <i class="conum" data-value="1"></i><b>(1)</b>
+    public GenerateMD5(File sourceFile, File md5File) { <i class="conum" data-value="2"></i><b>(2)</b>
+        this.sourceFile = sourceFile;
+        this.md5File = md5File;
     }
 
-    <span class="annotation">@Override</span>
-    <span class="directive">public</span> <span class="type">void</span> run() {
-        <span class="keyword">try</span> {
-            <span class="predefined-type">InputStream</span> stream = <span class="keyword">new</span> <span class="predefined-type">FileInputStream</span>(sourceFile);
-            <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">Generating MD5 for </span><span class="delimiter">&quot;</span></span> + sourceFile.getName() + <span class="string"><span class="delimiter">&quot;</span><span class="content">...</span><span class="delimiter">&quot;</span></span>);
-            <span class="predefined-type">Thread</span>.sleep(<span class="integer">3000</span>);
-            FileUtils.writeStringToFile(md5File, DigestUtils.md5Hex(stream), (<span class="predefined-type">String</span>) <span class="predefined-constant">null</span>);
-        } <span class="keyword">catch</span> (<span class="exception">Exception</span> e) {
-            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="exception">RuntimeException</span>(e);
+    @Override
+    public void run() {
+        try {
+            InputStream stream = new FileInputStream(sourceFile);
+            System.out.println("Generating MD5 for " + sourceFile.getName() + "...");
+            Thread.sleep(3000);
+            FileUtils.writeStringToFile(md5File, DigestUtils.md5Hex(stream), (String) null);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }</code></pre>
@@ -399,37 +398,37 @@ class.  This class is your "unit of work" implementation and should implement <c
 </div>
 <div class="paragraph">
 <p>Now, you should change your custom task class to submit work to the
-<a href="https://docs.gradle.org/4.6/javadoc/org/gradle/workers/WorkerExecutor.html">WorkerExecutor</a> instead of doing the work itself.</p>
+<a href="https://docs.gradle.org/4.7/javadoc/org/gradle/workers/WorkerExecutor.html">WorkerExecutor</a> instead of doing the work itself.</p>
 </div>
 <div class="listingblock">
 <div class="title">buildSrc/src/main/java/CreateMD5.java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">org.gradle.api.Action</span>;
-<span class="keyword">import</span> <span class="include">org.gradle.api.tasks</span>.*;
-<span class="keyword">import</span> <span class="include">org.gradle.workers</span>.*;
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">import org.gradle.api.Action;
+import org.gradle.api.tasks.*;
+import org.gradle.workers.*;
 
-<span class="keyword">import</span> <span class="include">javax.inject.Inject</span>;
-<span class="keyword">import</span> <span class="include">java.io.File</span>;
+import javax.inject.Inject;
+import java.io.File;
 
-<span class="type">class</span> <span class="class">CreateMD5</span> <span class="directive">extends</span> SourceTask {
-    <span class="directive">private</span> <span class="directive">final</span> WorkerExecutor workerExecutor; <i class="conum" data-value="1"></i><b>(1)</b>
+class CreateMD5 extends SourceTask {
+    private final WorkerExecutor workerExecutor; <i class="conum" data-value="1"></i><b>(1)</b>
 
-    <span class="annotation">@OutputDirectory</span>
-    <span class="predefined-type">File</span> destinationDir;
+    @OutputDirectory
+    File destinationDir;
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">public</span> CreateMD5(WorkerExecutor workerExecutor) { <i class="conum" data-value="2"></i><b>(2)</b>
-        <span class="local-variable">super</span>();
-        <span class="local-variable">this</span>.workerExecutor = workerExecutor;
+    @Inject
+    public CreateMD5(WorkerExecutor workerExecutor) { <i class="conum" data-value="2"></i><b>(2)</b>
+        super();
+        this.workerExecutor = workerExecutor;
     }
 
-    <span class="annotation">@TaskAction</span>
-    <span class="directive">public</span> <span class="type">void</span> createHashes() {
-        <span class="keyword">for</span> (<span class="predefined-type">File</span> sourceFile : getSource().getFiles()) {
-            <span class="predefined-type">File</span> md5File = <span class="keyword">new</span> <span class="predefined-type">File</span>(destinationDir, sourceFile.getName() + <span class="string"><span class="delimiter">&quot;</span><span class="content">.md5</span><span class="delimiter">&quot;</span></span>);
-            workerExecutor.submit(GenerateMD5.class, <span class="keyword">new</span> <span class="predefined-type">Action</span>&lt;WorkerConfiguration&gt;() { <i class="conum" data-value="3"></i><b>(3)</b>
-                <span class="annotation">@Override</span>
-                <span class="directive">public</span> <span class="type">void</span> execute(WorkerConfiguration config) {
+    @TaskAction
+    public void createHashes() {
+        for (File sourceFile : getSource().getFiles()) {
+            File md5File = new File(destinationDir, sourceFile.getName() + ".md5");
+            workerExecutor.submit(GenerateMD5.class, new Action&lt;WorkerConfiguration&gt;() { <i class="conum" data-value="3"></i><b>(3)</b>
+                @Override
+                public void execute(WorkerConfiguration config) {
                     config.setIsolationMode(IsolationMode.NONE); <i class="conum" data-value="4"></i><b>(4)</b>
                     config.params(sourceFile, md5File); <i class="conum" data-value="5"></i><b>(5)</b>
                 }
@@ -443,14 +442,14 @@ class.  This class is your "unit of work" implementation and should implement <c
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>You&#8217;ll need to have the <a href="https://docs.gradle.org/4.6/javadoc/org/gradle/workers/WorkerExecutor.html">WorkerExecutor</a> service in order
+<td>You&#8217;ll need to have the <a href="https://docs.gradle.org/4.7/javadoc/org/gradle/workers/WorkerExecutor.html">WorkerExecutor</a> service in order
 to submit your work.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>To get a <a href="https://docs.gradle.org/4.6/javadoc/org/gradle/workers/WorkerExecutor.html">WorkerExecutor</a>, create a constructor annotated
+<td>To get a <a href="https://docs.gradle.org/4.7/javadoc/org/gradle/workers/WorkerExecutor.html">WorkerExecutor</a>, create a constructor annotated
 with <code>javax.inject.Inject</code>.  Gradle will inject the
-<a href="https://docs.gradle.org/4.6/javadoc/org/gradle/workers/WorkerExecutor.html">WorkerExecutor</a> at runtime when the task is created.</td>
+<a href="https://docs.gradle.org/4.7/javadoc/org/gradle/workers/WorkerExecutor.html">WorkerExecutor</a> at runtime when the task is created.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -513,13 +512,13 @@ should use this dependency when building the classes, but should not put it on t
 <div class="listingblock">
 <div class="title">buildSrc/build.gradle</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy">repositories {
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">repositories {
     jcenter()
 }
 
 dependencies {
-    compile <span class="string"><span class="delimiter">&quot;</span><span class="content">commons-io:commons-io:2.5</span><span class="delimiter">&quot;</span></span>
-    compileOnly <span class="string"><span class="delimiter">&quot;</span><span class="content">commons-codec:commons-codec:1.9</span><span class="delimiter">&quot;</span></span>
+    compile "commons-io:commons-io:2.5"
+    compileOnly "commons-codec:commons-codec:1.9"
 }</code></pre>
 </div>
 </div>
@@ -532,37 +531,37 @@ classloader.</p>
 <div class="listingblock">
 <div class="title">buildSrc/src/main/java/CreateMD5.java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">import</span> <span class="include">org.gradle.api.Action</span>;
-<span class="keyword">import</span> <span class="include">org.gradle.api.file.FileCollection</span>;
-<span class="keyword">import</span> <span class="include">org.gradle.api.tasks.*</span>;
-<span class="keyword">import</span> <span class="include">org.gradle.workers.*</span>;
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">import org.gradle.api.Action;
+import org.gradle.api.file.FileCollection;
+import org.gradle.api.tasks.*;
+import org.gradle.workers.*;
 
-<span class="keyword">import</span> <span class="include">javax.inject.Inject</span>;
-<span class="keyword">import</span> <span class="include">java.io.File</span>;
-<span class="keyword">import</span> <span class="include">java.util.Set</span>;
+import javax.inject.Inject;
+import java.io.File;
+import java.util.Set;
 
-<span class="type">class</span> <span class="class">CreateMD5</span> <span class="directive">extends</span> SourceTask {
-    <span class="directive">private</span> <span class="directive">final</span> WorkerExecutor workerExecutor;
+class CreateMD5 extends SourceTask {
+    private final WorkerExecutor workerExecutor;
 
-    <span class="annotation">@OutputDirectory</span>
-    <span class="predefined-type">File</span> destinationDir;
+    @OutputDirectory
+    File destinationDir;
 
-    <span class="annotation">@InputFiles</span>
+    @InputFiles
     FileCollection codecClasspath; <i class="conum" data-value="1"></i><b>(1)</b>
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">public</span> CreateMD5(WorkerExecutor workerExecutor) {
-        <span class="local-variable">super</span>();
-        <span class="local-variable">this</span>.workerExecutor = workerExecutor;
+    @Inject
+    public CreateMD5(WorkerExecutor workerExecutor) {
+        super();
+        this.workerExecutor = workerExecutor;
     }
 
-    <span class="annotation">@TaskAction</span>
-    <span class="directive">public</span> <span class="type">void</span> createHashes() {
-        <span class="keyword">for</span> (<span class="predefined-type">File</span> sourceFile : getSource().getFiles()) {
-            <span class="predefined-type">File</span> md5File = <span class="keyword">new</span> <span class="predefined-type">File</span>(destinationDir, sourceFile.getName() + <span class="string"><span class="delimiter">&quot;</span><span class="content">.md5</span><span class="delimiter">&quot;</span></span>);
-            workerExecutor.submit(GenerateMD5.class, <span class="keyword">new</span> <span class="predefined-type">Action</span>&lt;WorkerConfiguration&gt;() {
-                <span class="annotation">@Override</span>
-                <span class="directive">public</span> <span class="type">void</span> execute(WorkerConfiguration config) {
+    @TaskAction
+    public void createHashes() {
+        for (File sourceFile : getSource().getFiles()) {
+            File md5File = new File(destinationDir, sourceFile.getName() + ".md5");
+            workerExecutor.submit(GenerateMD5.class, new Action&lt;WorkerConfiguration&gt;() {
+                @Override
+                public void execute(WorkerConfiguration config) {
                     config.setIsolationMode(IsolationMode.CLASSLOADER);
                     config.params(sourceFile, md5File);
                     config.classpath(codecClasspath); <i class="conum" data-value="2"></i><b>(2)</b>
@@ -582,7 +581,7 @@ classloader.</p>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
 <td>Configure the classpath on the
-<a href="https://docs.gradle.org/4.6/javadoc/org/gradle/workers/WorkerConfiguration.html">WorkerConfiguration</a> when submitting the work item.</td>
+<a href="https://docs.gradle.org/4.7/javadoc/org/gradle/workers/WorkerConfiguration.html">WorkerConfiguration</a> when submitting the work item.</td>
 </tr>
 </table>
 </div>
@@ -593,7 +592,7 @@ time.  We&#8217;ll also create a dependency to resolve our codec library from th
 <div class="listingblock">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">plugins { id <span class="string"><span class="delimiter">'</span><span class="content">base</span><span class="delimiter">'</span></span> }
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">plugins { id 'base' }
 
 repositories {
     jcenter() <i class="conum" data-value="1"></i><b>(1)</b>
@@ -604,12 +603,12 @@ configurations {
 }
 
 dependencies {
-    codec <span class="string"><span class="delimiter">&quot;</span><span class="content">commons-codec:commons-codec:1.10</span><span class="delimiter">&quot;</span></span> <i class="conum" data-value="3"></i><b>(3)</b>
+    codec "commons-codec:commons-codec:1.10" <i class="conum" data-value="3"></i><b>(3)</b>
 }
 
 task md5(type: CreateMD5) {
-    destinationDir = file(<span class="string"><span class="delimiter">&quot;</span><span class="content">${buildDir}/md5</span><span class="delimiter">&quot;</span></span>)
-    source = file(<span class="string"><span class="delimiter">&quot;</span><span class="content">src</span><span class="delimiter">&quot;</span></span>)
+    destinationDir = file("${buildDir}/md5")
+    source = file("src")
     codecClasspath = configurations.codec <i class="conum" data-value="4"></i><b>(4)</b>
 }</code></pre>
 </div>
@@ -672,43 +671,43 @@ configure custom settings for the new process.</p>
 <div class="listingblock">
 <div class="title">buildSrc/src/main/java/CreateMD5.java</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">import</span> <span class="include">org.gradle.api.Action</span>;
-<span class="keyword">import</span> <span class="include">org.gradle.api.file.FileCollection</span>;
-<span class="keyword">import</span> <span class="include">org.gradle.api.tasks</span>.*;
-<span class="keyword">import</span> <span class="include">org.gradle.process.JavaForkOptions</span>;
-<span class="keyword">import</span> <span class="include">org.gradle.workers</span>.*;
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">import org.gradle.api.Action;
+import org.gradle.api.file.FileCollection;
+import org.gradle.api.tasks.*;
+import org.gradle.process.JavaForkOptions;
+import org.gradle.workers.*;
 
-<span class="keyword">import</span> <span class="include">javax.inject.Inject</span>;
-<span class="keyword">import</span> <span class="include">java.io.File</span>;
-<span class="keyword">import</span> <span class="include">java.util.Set</span>;
+import javax.inject.Inject;
+import java.io.File;
+import java.util.Set;
 
-<span class="type">class</span> <span class="class">CreateMD5</span> <span class="directive">extends</span> SourceTask {
-    <span class="directive">private</span> <span class="directive">final</span> WorkerExecutor workerExecutor;
+class CreateMD5 extends SourceTask {
+    private final WorkerExecutor workerExecutor;
 
-    <span class="annotation">@OutputDirectory</span>
-    <span class="predefined-type">File</span> destinationDir;
+    @OutputDirectory
+    File destinationDir;
 
-    <span class="annotation">@InputFiles</span>
+    @InputFiles
     FileCollection codecClasspath;
 
-    <span class="annotation">@Inject</span>
-    <span class="directive">public</span> CreateMD5(WorkerExecutor workerExecutor) {
-        <span class="local-variable">super</span>();
-        <span class="local-variable">this</span>.workerExecutor = workerExecutor;
+    @Inject
+    public CreateMD5(WorkerExecutor workerExecutor) {
+        super();
+        this.workerExecutor = workerExecutor;
     }
 
-    <span class="annotation">@TaskAction</span>
-    <span class="directive">public</span> <span class="type">void</span> createHashes() {
-        <span class="keyword">for</span> (<span class="predefined-type">File</span> sourceFile : getSource().getFiles()) {
-            <span class="predefined-type">File</span> md5File = <span class="keyword">new</span> <span class="predefined-type">File</span>(destinationDir, sourceFile.getName() + <span class="string"><span class="delimiter">&quot;</span><span class="content">.md5</span><span class="delimiter">&quot;</span></span>);
-            workerExecutor.submit(GenerateMD5.class, <span class="keyword">new</span> <span class="predefined-type">Action</span>&lt;WorkerConfiguration&gt;() {
-                <span class="annotation">@Override</span>
-                <span class="directive">public</span> <span class="type">void</span> execute(WorkerConfiguration config) {
+    @TaskAction
+    public void createHashes() {
+        for (File sourceFile : getSource().getFiles()) {
+            File md5File = new File(destinationDir, sourceFile.getName() + ".md5");
+            workerExecutor.submit(GenerateMD5.class, new Action&lt;WorkerConfiguration&gt;() {
+                @Override
+                public void execute(WorkerConfiguration config) {
                     config.setIsolationMode(IsolationMode.PROCESS); <i class="conum" data-value="1"></i><b>(1)</b>
-                    config.forkOptions(<span class="keyword">new</span> <span class="predefined-type">Action</span>&lt;JavaForkOptions&gt;() {
-                        <span class="annotation">@Override</span>
-                        <span class="directive">public</span> <span class="type">void</span> execute(JavaForkOptions options) {
-                            options.setMaxHeapSize(<span class="string"><span class="delimiter">&quot;</span><span class="content">64m</span><span class="delimiter">&quot;</span></span>); <i class="conum" data-value="2"></i><b>(2)</b>
+                    config.forkOptions(new Action&lt;JavaForkOptions&gt;() {
+                        @Override
+                        public void execute(JavaForkOptions options) {
+                            options.setMaxHeapSize("64m"); <i class="conum" data-value="2"></i><b>(2)</b>
                         }
                     });
                     config.params(sourceFile, md5File);
@@ -728,7 +727,7 @@ configure custom settings for the new process.</p>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Set up the <a href="https://docs.gradle.org/4.6/javadoc/org/gradle/process/JavaForkOptions.html">JavaForkOptions</a> for the new process.</td>
+<td>Set up the <a href="https://docs.gradle.org/4.7/javadoc/org/gradle/process/JavaForkOptions.html">JavaForkOptions</a> for the new process.</td>
 </tr>
 </table>
 </div>
@@ -799,6 +798,9 @@ BUILD SUCCESSFUL in 5s</pre>
 </div>
 </div>
 </div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+<script>prettyPrint()</script>
 <footer class="site-layout__footer site-footer" itemscope="itemscope" itemtype="https://schema.org/WPFooter">
     <nav class="site-footer__navigation" itemtype="https://schema.org/SiteNavigationElement">
         <section class="site-footer__links">
