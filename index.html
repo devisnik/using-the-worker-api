@@ -4,19 +4,19 @@
 <meta charset="utf-8">
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 1.5.6.1">
+<meta name="generator" content="Asciidoctor 1.5.5">
 <title>Using the Worker API</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+
 <link crossorigin href="//assets.gradle.com" rel="preconnect">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,400i">
-<link rel="stylesheet" href="https://guides.gradle.org/css/asciidoctor.css">
-<link rel="stylesheet" href="https://guides.gradle.org/css/docs-blue-theme-4.8.css">
+<link href="https://fonts.googleapis.com/css?family=Inconsolata:400,700" rel="stylesheet">
+<link rel="stylesheet" href="https://guides.gradle.org/css/docs-blue-theme-4.10.css">
 <link rel="apple-touch-icon" sizes="180x180" href="https://guides.gradle.org/icon/apple-touch-icon.png">
 <link rel="icon" type="image/png" href="https://guides.gradle.org/icon/favicon-32x32.png" sizes="32x32">
 <link rel="icon" type="image/png" href="https://guides.gradle.org/icon/favicon-16x16.png" sizes="16x16">
 <link rel="manifest" href="https://guides.gradle.org/icon/manifest.json">
 <link rel="shortcut icon" href="https://guides.gradle.org/icon/favicon.ico">
-<script defer src="https://guides.gradle.org/js/guides-4.8.js"></script>
+<script defer src="https://guides.gradle.org/js/guides-4.10.js"></script>
 <script defer src="https://guides.gradle.org/js/set-time-to-complete-text.js"></script>
 <script async src="https://guides.gradle.org/js/autotrack.js"></script>
 
@@ -144,9 +144,9 @@
         <ul>
             <li><a class="nav-dropdown" data-toggle="collapse" href="#ci-integration" aria-expanded="false" aria-controls="ci-integration">Continuous Integration</a>
                 <ul id="ci-integration">
-                    <li><a href="https://guides.gradle.org/executing-gradle-builds-on-jenkins">Using Gradle with Jenkins</a></li>
-                    <li><a href="https://guides.gradle.org/executing-gradle-builds-on-teamcity">Using Gradle with TeamCity</a></li>
-                    <li><a href="https://guides.gradle.org/executing-gradle-builds-on-travisci">Using Gradle with Travis CI</a></li>
+                    <li><a href="https://guides.gradle.org/executing-gradle-builds-on-jenkins/">Using Gradle with Jenkins</a></li>
+                    <li><a href="https://guides.gradle.org/executing-gradle-builds-on-teamcity/">Using Gradle with TeamCity</a></li>
+                    <li><a href="https://guides.gradle.org/executing-gradle-builds-on-travisci/">Using Gradle with Travis CI</a></li>
                 </ul>
             </li>
         </ul>
@@ -167,6 +167,19 @@
     <div class="chapter">
 <div id="header">
 <h1>Using the Worker API</h1>
+<div id="toc" class="toc">
+<div id="toctitle">Contents</div>
+<ul class="sectlevel1">
+<li><a href="#what_you_ll_create">What you&#8217;ll create</a></li>
+<li><a href="#what_you_ll_need">What you&#8217;ll need</a></li>
+<li><a href="#create_a_custom_task_class">Create a custom task class</a></li>
+<li><a href="#converting_to_the_worker_api">Converting to the Worker API</a></li>
+<li><a href="#changing_the_isolation_mode">Changing the isolation mode</a></li>
+<li><a href="#creating_a_worker_daemon">Creating a Worker Daemon</a></li>
+<li><a href="#summary">Summary</a></li>
+<li><a href="#help_improve_this_guide">Help improve this guide</a></li>
+</ul>
+</div>
 </div>
 <div id="content">
 <div id="preamble">
@@ -181,19 +194,6 @@ an existing custom task to use the Worker API.</p>
 <p>This guide assumes that you understand the basics of writing Gradle custom tasks.  Please consider working
 through <a href="https://guides.gradle.org/writing-gradle-tasks">Writing Gradle Tasks</a> first.</p>
 </div>
-</div>
-<div id="toc" class="toc">
-<div id="toctitle">Contents</div>
-<ul class="sectlevel1">
-<li><a href="#what_you_ll_create">What you&#8217;ll create</a></li>
-<li><a href="#what_you_ll_need">What you&#8217;ll need</a></li>
-<li><a href="#create_a_custom_task_class">Create a custom task class</a></li>
-<li><a href="#converting_to_the_worker_api">Converting to the Worker API</a></li>
-<li><a href="#changing_the_isolation_mode">Changing the isolation mode</a></li>
-<li><a href="#creating_a_worker_daemon">Creating a Worker Daemon</a></li>
-<li><a href="#summary">Summary</a></li>
-<li><a href="#help_improve_this_guide">Help improve this guide</a></li>
-</ul>
 </div>
 </div>
 <div class="sect1">
@@ -221,7 +221,7 @@ isolation.  In the process, you&#8217;ll learn about the basics of the Worker AP
 <p>A Java Development Kit (JDK), version 1.7 or better</p>
 </li>
 <li>
-<p>A <a href="https://gradle.org/install">Gradle distribution</a>, version 4.7 or better</p>
+<p>A <a href="https://gradle.org/install">Gradle distribution</a>, version 4.10-rc-2 or better</p>
 </li>
 </ul>
 </div>
@@ -267,7 +267,7 @@ MD5 hashes.</td>
 <td class="content">
 If you are not familiar with <code>buildSrc</code>, this is a special directory that allows you to define and build
 custom classes that should be available for use in your build script.  See
-<a href="https://docs.gradle.org/4.7/userguide/organizing_build_logic.html#sec:build_sources">the user manual</a> for further information.
+<a href="https://docs.gradle.org/4.10-rc-2/userguide/organizing_build_logic.html#sec:build_sources">the user manual</a> for further information.
 </td>
 </tr>
 </table>
@@ -317,7 +317,7 @@ class CreateMD5 extends SourceTask { <i class="conum" data-value="1"></i><b>(1)<
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td><a href="https://docs.gradle.org/4.7/javadoc/org/gradle/api/tasks/SourceTask.html">SourceTask</a> is a convenience type for tasks that operate on a
+<td><a href="https://docs.gradle.org/4.10-rc-2/javadoc/org/gradle/api/tasks/SourceTask.html">SourceTask</a> is a convenience type for tasks that operate on a
 set of source files.</td>
 </tr>
 <tr>
@@ -479,7 +479,7 @@ public class GenerateMD5 implements Runnable {
 </div>
 <div class="paragraph">
 <p>Now, you should change your custom task class to submit work to the
-<a href="https://docs.gradle.org/4.7/javadoc/org/gradle/workers/WorkerExecutor.html">WorkerExecutor</a> instead of doing the work itself.</p>
+<a href="https://docs.gradle.org/4.10-rc-2/javadoc/org/gradle/workers/WorkerExecutor.html">WorkerExecutor</a> instead of doing the work itself.</p>
 </div>
 <div class="listingblock">
 <div class="title">buildSrc/src/main/java/CreateMD5.java</div>
@@ -523,14 +523,14 @@ class CreateMD5 extends SourceTask {
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>You&#8217;ll need to have the <a href="https://docs.gradle.org/4.7/javadoc/org/gradle/workers/WorkerExecutor.html">WorkerExecutor</a> service in order
+<td>You&#8217;ll need to have the <a href="https://docs.gradle.org/4.10-rc-2/javadoc/org/gradle/workers/WorkerExecutor.html">WorkerExecutor</a> service in order
 to submit your work.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>To get a <a href="https://docs.gradle.org/4.7/javadoc/org/gradle/workers/WorkerExecutor.html">WorkerExecutor</a>, create a constructor annotated
+<td>To get a <a href="https://docs.gradle.org/4.10-rc-2/javadoc/org/gradle/workers/WorkerExecutor.html">WorkerExecutor</a>, create a constructor annotated
 with <code>javax.inject.Inject</code>.  Gradle will inject the
-<a href="https://docs.gradle.org/4.7/javadoc/org/gradle/workers/WorkerExecutor.html">WorkerExecutor</a> at runtime when the task is created.</td>
+<a href="https://docs.gradle.org/4.10-rc-2/javadoc/org/gradle/workers/WorkerExecutor.html">WorkerExecutor</a> at runtime when the task is created.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -662,7 +662,7 @@ class CreateMD5 extends SourceTask {
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
 <td>Configure the classpath on the
-<a href="https://docs.gradle.org/4.7/javadoc/org/gradle/workers/WorkerConfiguration.html">WorkerConfiguration</a> when submitting the work item.</td>
+<a href="https://docs.gradle.org/4.10-rc-2/javadoc/org/gradle/workers/WorkerConfiguration.html">WorkerConfiguration</a> when submitting the work item.</td>
 </tr>
 </table>
 </div>
@@ -808,7 +808,7 @@ class CreateMD5 extends SourceTask {
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Set up the <a href="https://docs.gradle.org/4.7/javadoc/org/gradle/process/JavaForkOptions.html">JavaForkOptions</a> for the new process.</td>
+<td>Set up the <a href="https://docs.gradle.org/4.10-rc-2/javadoc/org/gradle/process/JavaForkOptions.html">JavaForkOptions</a> for the new process.</td>
 </tr>
 </table>
 </div>
